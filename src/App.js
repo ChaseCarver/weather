@@ -19,19 +19,13 @@ function App() {
     if(location){
     const [lat, lon] = location
     const api = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=42d6bde5f66700148deb5a2f62801b36`
-    const forecastApi = `https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&appid=42d6bde5f66700148deb5a2f62801b36`
-    fetch(api)
+    const forecastApi = `https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&appid=42d6bde5f66700148deb5a2f62801b36&units=imperial`
+    fetch(forecastApi)
       .then(response => response.json())
       .then(data => {console.log("Data received:", data); setData(data)})
       .catch(error => console.error("Fetch error:", error));
-      console.log("Fetching data from API:", api)
-    fetch()
-      .then(response => response.json())
-      .then(data => {console.log("Data received:", data);})
-      .catch(error => console.error("Fetch error:", error));
-      console.log("Fetching data from API:")}
+      console.log("Fetching data from API:", forecastApi)}
   }, [location])
-
   
 
   function kToFh(data){
@@ -42,11 +36,11 @@ function App() {
     <div>
       {data ? (
         <>
-          <p>High Temperature Is: {kToFh(data.main.temp_max)}</p>
-          <p>Low Temperature Is: {kToFh(data.main.temp_min)}</p>
-          <p>Current Temperature Is: {kToFh(data.main.temp)}</p>
-          <p>Current Weather Is: {data.weather[0].main}, {data.weather[0].description}</p>
-          <img src={`https://openweathermap.org/img/wn/${data.weather[0].icon}@2x.png`}></img>
+          <p>Time: {new Date(data.list[1].dt * 1000).toString()}</p>
+          <p>Current Temperature Is: {data.list[0].main.temp}</p>
+          <p>Current Weather Is: {data.list[0].weather[0].main}, {data.list[0].weather[0].description}</p>
+          <img src={`https://openweathermap.org/img/wn/${data.list[0].weather[0].icon}@2x.png`}></img>
+          <p>Length of list: {data.list.length}</p>
         </>) : (<p>Loading...</p>)}
     </div>
   );
