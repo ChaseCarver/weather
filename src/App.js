@@ -1,32 +1,38 @@
 import './App.css';
 import React, { useState, useEffect } from 'react';
-// import data from './DATA.json';
 
 function App() {
-  const [data, setData] = useState(null);
+  const [currentData, setCurrentData] = useState(null);
+  const [futureData, setFutureData] = useState(null)
   const [location, setLocation] = useState(null);
-  const temperature = []
+
+  
 
   useEffect(() => {
     if(navigator.geolocation){
       navigator.geolocation.getCurrentPosition(
         (position) => {setLocation([position.coords.latitude, position.coords.longitude]);
       console.log(`Location received: ${position.coords.latitude, position.coords.longitude}`)}
-    )} 
+    )}
   }, []);
   
 
   useEffect(() => {
     if(location){
     const [lat, lon] = location
-    const api = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=42d6bde5f66700148deb5a2f62801b36`
+    const api = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=42d6bde5f66700148deb5a2f62801b36&units=imperial`
     const forecastApi = `https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&appid=42d6bde5f66700148deb5a2f62801b36&units=imperial`
     
     fetch(forecastApi)
       .then(response => response.json())
-      .then(data => {console.log("Data received:", data); setData(data)})
+      .then(data => {console.log("Fetching data from API:", forecastApi); setFutureData(data)})
       .catch(error => console.error("Fetch error:", error));
-      console.log("Fetching data from API:", forecastApi)}
+
+    fetch(api)
+      .then(response => response.json())
+      .then(data => {console.log("Fetching data from API:", api); setCurrentData(data)})
+      .catch(error => console.error("Fetch error:", error));
+    }
   }, [location])
 
   function formatDate(date){
@@ -38,26 +44,33 @@ function App() {
       hour12: true}
     return new Date(date).toLocaleString(undefined, options)
   }
-  
-  // if(data){.forEach((element) => 
-  //   temperature.push(`<p>${formatDate(new Date(element.dt * 1000))}</p>` + 
-  //   `<p> ${element.main.temp}°F  </p>` +
-  //   `<img src={https://openweathermap.org/img/wn/${element.weather[0].icon}@2x.png}></img>`))
-  // }
 
   return (
-    <div>
-      {data ? (
+    <>
+      <>{location ? (<></>) : (<p>Please show location...</p>)}</>
+      <div>
+        {currentData ? (
         <>
-          {data.list.map((element) => (
             <div style={{display: 'inline-block', border: '1px solid'}}>
-              <p>{formatDate(new Date(element.dt * 1000))}</p>
-              <p> {element.main.temp}°F  </p>
-              <img width="50" src={`https://openweathermap.org/img/wn/${element.weather[0].icon}@2x.png`}></img>
+              <p>{formatDate(new Date(currentData.dt * 1000))}</p>
+              <p> {currentData.main.temp}°F  </p>
+              <img width="50" src={`https://openweathermap.org/img/wn/${currentData.weather[0].icon}@2x.png`}></img>
             </div>
-            ))}
         </>) : (<p>Loading...</p>)}
-    </div>
+      </div>
+      <div>
+        {futureData ? (
+          <>
+            {futureData.list.map((element) => (
+              <div style={{display: 'inline-block', border: '1px solid'}}>
+                <p>{formatDate(new Date(element.dt * 1000))}</p>
+                <p> {element.main.temp}°F  </p>
+                <img width="50" src={`https://openweathermap.org/img/wn/${element.weather[0].icon}@2x.png`}></img>
+              </div>
+              ))}
+          </>) : (<p>Loading...</p>)}
+      </div>
+    </>
   );
 }
 
