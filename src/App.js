@@ -25,7 +25,7 @@ function App() {
     const apiKey = "42d6bde5f66700148deb5a2f62801b36"
     const currentDataApi = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${apiKey}&units=imperial`
     const futureDataApi = `https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&appid=${apiKey}&units=imperial`
-    const cityNameApi = `http://api.openweathermap.org/geo/1.0/reverse?lat=${lat}&lon=${lon}&appid=${apiKey}`
+    const cityNameApi = `https://api.openweathermap.org/geo/1.0/reverse?lat=${lat}&lon=${lon}&appid=${apiKey}`
     
     fetch(futureDataApi)
       .then(response => response.json())
